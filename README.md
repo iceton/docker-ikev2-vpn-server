@@ -43,7 +43,7 @@ Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and 
 
 Forked from https://github.com/gaomd/docker-ikev2-vpn-server.
 
-Container based on Ubuntu v20.04, openssl, strongswan
+Container based on Debian 11, OpenSSL, strongSwan
 
 When the container is created, a shared secret is generated for authentication. No certificate, username, or password is required.
 
