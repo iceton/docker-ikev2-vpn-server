@@ -1,0 +1,19 @@
+#!/bin/bash
+
+CONN_SHARED_SECRET=$(cat /etc/ipsec.secrets | sed 's/.*"\(.*\)"/\1/g')
+
+# From https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/1634025f9dbf60cb94711c398670cdecedd275ae/run.sh#L28
+check_ip() {
+  IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+}
+
+# From https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/1634025f9dbf60cb94711c398670cdecedd275ae/run.sh#L244
+public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+check_ip "$public_ip" || public_ip="Public IP not detected"
+
+echo "VPN public IP: ${public_ip}"
+echo "IKEv2 pre-shared key: ${CONN_SHARED_SECRET}"
+echo "IKEv2 username: (none, leave blank)"
+echo "IKEv2 password: (none, leave blank)"

@@ -24,20 +24,31 @@
 
 # TODO: add regenerate shared secret option
 
-# In normal cases, you will only need to pass the HOST of your server.
-[ "no${HOST}" = "no" ] && echo "\$HOST environment variable required." && exit 1
+# From https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/1634025f9dbf60cb94711c398670cdecedd275ae/run.sh#L28
+check_ip() {
+  IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+}
 
-: ${PROFILE_NAME="My IKEv2 VPN Profile"}
-: ${PROFILE_IDENTIFIER=$(echo -n "${HOST}." | tac -s. | sed 's/\.$//g')}
+if [ -z "$VPN_HOST" ]; then
+  # From https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/1634025f9dbf60cb94711c398670cdecedd275ae/run.sh#L244
+  public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+  check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || { echo "VPN_HOST environment variable required" && exit 1; }
+  VPN_HOST="$public_ip"
+fi
+
+: ${PROFILE_NAME="${VPN_HOST} IKEv2 VPN"}
+: ${PROFILE_IDENTIFIER=$(echo -n "${VPN_HOST}." | tac -s. | sed 's/\.$//g')}
 : ${PROFILE_UUID=$(hostname)}
 
 # These variable, especially CONN_UUID, are bind to per username,
 # which currently, all users share the same secrets and configurations.
-: ${CONN_NAME="My IKEv2 VPN"}
+: ${CONN_NAME=$PROFILE_NAME}
 : ${CONN_IDENTIFIER="${PROFILE_IDENTIFIER}.shared-configuration"}
 : ${CONN_UUID=$(uuidgen)}
-: ${CONN_HOST=${HOST}}
-: ${CONN_REMOTE_IDENTIFIER=${HOST}}
+: ${CONN_HOST=${VPN_HOST}}
+: ${CONN_REMOTE_IDENTIFIER=${VPN_HOST}}
 CONN_SHARED_SECRET=$(cat /etc/ipsec.secrets | sed 's/.*"\(.*\)"/\1/g')
 
 cat <<EOF

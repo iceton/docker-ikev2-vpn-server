@@ -1,22 +1,40 @@
-# IKEv2 VPN Server on Docker
+# IKEv2 VPN server Docker image
 
-Recipe to build [`gaomd/ikev2-vpn-server`](https://registry.hub.docker.com/u/gaomd/ikev2-vpn-server/) Docker image.
+Based on Ubuntu v20.04. Forked from https://github.com/gaomd/docker-ikev2-vpn-server.
 
 ## Usage
 
-### 1. Start the IKEv2 VPN Server
+### 1. Build the image
 
-    docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp gaomd/ikev2-vpn-server:0.3.0
+    > git clone https://github.com/iceton/docker-ikev2-vpn-server.git
+    > docker build -t ikev2-vpn docker-ikev2-vpn-server/
 
-### 2. Generate the .mobileconfig (for iOS / macOS)
+### 2. Start the IKEv2 VPN Server
 
-    docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e "HOST=vpn1.example.com" gaomd/ikev2-vpn-server:0.3.0 generate-mobileconfig > ikev2-vpn.mobileconfig
+    > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp ikev2-vpn
 
-*Be sure to replace `vpn1.example.com` with your own domain name and resolve it to you server's IP address. Simply put an IP address is supported as well (and enjoy an even faster handshake speed).*
+Or to specify your own pre-shared key, use the `VPN_PSK` environment variable (>=32 characters please) like this:
 
-Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer via SSH tunnel (`scp`) or any other secure methods.
+    > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp -e VPN_PSK=09F911029D74E35BD84156C5635688C1 ikev2-vpn
 
-### 3. Install the .mobileconfig (for iOS / macOS)
+### 3. View credentials / .mobileconfig
+
+#### View the credentials to connect
+
+    > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e ikev2-vpn echo-config
+
+    VPN public IP: 83.244.233.55
+    IKEv2 pre-shared key: 09F911029D74E35BD84156C5635688C1
+    IKEv2 username: (none, leave blank)
+    IKEv2 password: (none, leave blank)
+
+#### Or generate a .mobileconfig for use with iOS and MacOS
+
+    > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e VPN_HOST=mysweetvpn.com ikev2-vpn generate-mobileconfig > ikev2-vpn.mobileconfig
+
+Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer.
+
+##### Install the .mobileconfig (for iOS / macOS)
 
 - **iOS 9 or later**: AirDrop the `.mobileconfig` file to your iOS 9 device, finish the **Install Profile** screen;
 
