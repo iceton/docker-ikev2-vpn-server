@@ -11,9 +11,13 @@
     > docker build -t ikev2-vpn docker-ikev2-vpn-server/
     > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp ikev2-vpn
 
-Or to specify your own pre-shared key, use the `VPN_PSK` environment variable (>=32 characters please) like this:
+<details>
+<summary>Or to specify your own pre-shared key...</summary>
+    
+Use the `VPN_PSK` environment variable (>=32 characters please) like this:
 
     > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp -e VPN_PSK=09F911029D74E35BD84156C5635688C1 ikev2-vpn
+</details>
 
 ### 2. View credentials / .mobileconfig
 
