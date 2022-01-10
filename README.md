@@ -38,6 +38,27 @@ Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and 
 
 - macOS: Double click the file to start the profile installation.
 
+## How to use on AWS EC2
+
+You can use this to quickly create a VPN in any AWS region.
+
+- Configure a new instance (suggest t4g.nano Debian arm64)
+  - With security group allowing 22 (ssh), 500 (udp custom), 4500 (udp custom) incoming and any outgoing
+- Start instance
+- SSH to instance and start VPN:
+  
+      # Example commands for Debian (ssh to admin@EC2_PUBLIC_IP)
+      > sudo apt update
+      > sudo apt install -y gnupg
+      > curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      > echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      > sudo apt update
+      > sudo apt upgrade -y
+      > sudo apt install -y docker-ce
+      > sudo docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp icet/ikev2-vpn-server
+
 ## Technical Details
 
 Container built with Debian 11, OpenSSL, strongSwan, published to https://hub.docker.com/r/icet/ikev2-vpn-server
