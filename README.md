@@ -28,17 +28,15 @@ Or to specify your own pre-shared key, use the `VPN_PSK` environment variable (>
     IKEv2 username: (none, leave blank)
     IKEv2 password: (none, leave blank)
 
-#### Or generate a .mobileconfig for use with iOS and MacOS
+#### Or generate a .mobileconfig for use with iOS and macOS
 
     > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e VPN_HOST=mysweetvpn.com ikev2-vpn generate-mobileconfig > ikev2-vpn.mobileconfig
 
-Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer.
+Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and install:
 
-##### Install the .mobileconfig (for iOS / macOS)
+- iOS: AirDrop the file to your iOS device and install the profile.
 
-- **iOS 9 or later**: AirDrop the `.mobileconfig` file to your iOS 9 device, finish the **Install Profile** screen;
-
-- **macOS 10.11 El Capitan or later**: Double click the `.mobileconfig` file to start the *profile installation* wizard.
+- macOS: Double click the file to start the profile installation.
 
 ## Technical Details
 
