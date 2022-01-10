@@ -5,20 +5,17 @@
 
 ## Usage
 
-### 1. Build the container
+### 1. Start the IKEv2 VPN Server
 
     > git clone https://github.com/iceton/docker-ikev2-vpn-server.git
     > docker build -t ikev2-vpn docker-ikev2-vpn-server/
-
-### 2. Start the IKEv2 VPN Server
-
     > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp ikev2-vpn
 
 Or to specify your own pre-shared key, use the `VPN_PSK` environment variable (>=32 characters please) like this:
 
     > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp -e VPN_PSK=09F911029D74E35BD84156C5635688C1 ikev2-vpn
 
-### 3. View credentials / .mobileconfig
+### 2. View credentials / .mobileconfig
 
 #### View the credentials to connect
 
@@ -41,11 +38,11 @@ Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and 
 
 ## Technical Details
 
-Forked from https://github.com/gaomd/docker-ikev2-vpn-server.
+Container built with Debian 11, OpenSSL, strongSwan
 
-Container based on Debian 11, OpenSSL, strongSwan
+When the container is created, a shared secret is generated for authentication. No certificate, username, or password required.
 
-When the container is created, a shared secret is generated for authentication. No certificate, username, or password is required.
+Forked from https://github.com/gaomd/docker-ikev2-vpn-server
 
 ## License
 
@@ -53,6 +50,6 @@ Copyright (c) 2016 Mengdi Gao, This software is licensed under the [MIT License]
 
 ---
 
-\* IKEv2 protocol requires iOS 8 or later, macOS 10.11 El Capitan or later.
+IKEv2 protocol requires iOS >=8, macOS 10.11 El Capitan or later.
 
-\* Install for **iOS 8 or later** or when your AirDrop fails: Send an E-mail to your iOS device with the `.mobileconfig` file as attachment, then tap the attachment to bring up and finish the **Install Profile** screen.
+Alternate iOS install: Send an E-mail to your iOS device with the `.mobileconfig` file as attachment, then tap the attachment to bring up and finish the **Install Profile** screen.
