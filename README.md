@@ -1,10 +1,11 @@
-# IKEv2 VPN server Docker image
+# IKEv2 VPN server Docker container/image
 
-Based on Ubuntu v20.04. Forked from https://github.com/gaomd/docker-ikev2-vpn-server.
+- Automatic, configurable credentials
+- Easy mobileconfig generation
 
 ## Usage
 
-### 1. Build the image
+### 1. Build the container
 
     > git clone https://github.com/iceton/docker-ikev2-vpn-server.git
     > docker build -t ikev2-vpn docker-ikev2-vpn-server/
@@ -40,7 +41,11 @@ Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and 
 
 ## Technical Details
 
-Upon container creation, a *shared secret* was generated for authentication purpose, no *certificate*, *username*, or *password* was ever used, simple life!
+Forked from https://github.com/gaomd/docker-ikev2-vpn-server.
+
+Container based on Ubuntu v20.04, openssl, strongswan
+
+When the container is created, a shared secret is generated for authentication. No certificate, username, or password is required.
 
 ## License
 
