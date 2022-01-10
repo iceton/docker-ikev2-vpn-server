@@ -7,23 +7,21 @@
 
 ### 1. Start the IKEv2 VPN Server
 
-    > git clone https://github.com/iceton/docker-ikev2-vpn-server.git
-    > docker build -t ikev2-vpn docker-ikev2-vpn-server/
-    > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp ikev2-vpn
+    > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp icet/ikev2-vpn-server
 
 <details>
 <summary>Or to specify your own pre-shared key...</summary>
     
 Use the `VPN_PSK` environment variable (>=32 characters please) like this:
 
-    > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp -e VPN_PSK=09F911029D74E35BD84156C5635688C1 ikev2-vpn
+    > docker run --privileged -d --name ikev2-vpn-server --restart=always -p 500:500/udp -p 4500:4500/udp -e VPN_PSK=09F911029D74E35BD84156C5635688C1 icet/ikev2-vpn-server
 </details>
 
 ### 2. View credentials / .mobileconfig
 
 #### View the credentials to connect
 
-    > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e ikev2-vpn echo-config
+    > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server icet/ikev2-vpn-server echo-config
 
     VPN public IP: 83.244.233.55
     IKEv2 pre-shared key: 09F911029D74E35BD84156C5635688C1
@@ -32,7 +30,7 @@ Use the `VPN_PSK` environment variable (>=32 characters please) like this:
 
 #### Or generate a .mobileconfig for use with iOS and macOS
 
-    > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e VPN_HOST=mysweetvpn.com ikev2-vpn generate-mobileconfig > ikev2-vpn.mobileconfig
+    > docker run --privileged -i -t --rm --volumes-from ikev2-vpn-server -e VPN_HOST=mysweetvpn.com icet/ikev2-vpn-server generate-mobileconfig > ikev2-vpn.mobileconfig
 
 Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and install:
 
@@ -42,7 +40,7 @@ Transfer the generated `ikev2-vpn.mobileconfig` file to your local computer and 
 
 ## Technical Details
 
-Container built with Debian 11, OpenSSL, strongSwan
+Container built with Debian 11, OpenSSL, strongSwan, published to https://hub.docker.com/r/icet/ikev2-vpn-server
 
 When the container is created, a shared secret is generated for authentication. No certificate, username, or password required.
 
