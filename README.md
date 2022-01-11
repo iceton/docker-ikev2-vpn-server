@@ -2,6 +2,7 @@
 
 - Automatic, configurable credentials
 - Easy mobileconfig generation
+- amd64, arm64, arm/v7 images provided
 
 ## Usage
 
@@ -61,7 +62,7 @@ You can use this to quickly create a VPN in any AWS region.
 
 ## Technical Details
 
-Container built with Debian 11, OpenSSL, strongSwan, published to https://hub.docker.com/r/icet/ikev2-vpn-server
+Container built with Debian 11, OpenSSL, strongSwan, published to https://hub.docker.com/r/icet/ikev2-vpn-server for amd64, arm64, arm/v7 architectures
 
 When the container is created, a shared secret is generated for authentication. No certificate, username, or password required.
 
